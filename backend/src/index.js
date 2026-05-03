@@ -20,7 +20,9 @@ if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
 
-app.use(express.json());
+const jsonBodyLimit = process.env.JSON_BODY_LIMIT || "12mb";
+
+app.use(express.json({ limit: jsonBodyLimit }));
 app.use(cookieParser());
 app.use(
   cors({

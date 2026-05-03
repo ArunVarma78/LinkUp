@@ -9,10 +9,17 @@ const MessageInput = () => {
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
 
+  const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB raw file (~10 MB base64 in JSON — under server limit)
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      toast.error(`Image too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Max size is ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`);
+      e.target.value = "";
       return;
     }
 
